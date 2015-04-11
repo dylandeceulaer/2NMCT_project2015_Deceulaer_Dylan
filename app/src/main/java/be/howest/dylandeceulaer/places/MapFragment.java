@@ -9,6 +9,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,28 +33,54 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationManager mLocationManager;
+    private onMarkerClickInfoListener mMainActivity;
 
     public MapFragment() {
         // Required empty public constructor
     }
 
+    public interface onMarkerClickInfoListener{
+        public void onMarkerClick(Marker marker);
+        public void onMarkerInfoClose();
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        com.google.android.gms.maps.MapFragment mapFrag = ((com.google.android.gms.maps.MapFragment) getFragmentManager().findFragmentById(R.id.map));
-        getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
 
+        mMainActivity.onMarkerInfoClose();
+        com.google.android.gms.maps.MapFragment mapFrag = ((com.google.android.gms.maps.MapFragment) getFragmentManager().findFragmentById(R.id.map));
         mapFrag.getMapAsync(this);
         return v;
-        //LatLngBounds b = new LatLngBounds(loc, loc);
-
-        //PendingResult res = Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient,"Bakker",b,)
     }
 
+    public void addMarkerOnCurrentPosition(){
+        Location location = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), true));
+        LatLng loc = new LatLng(location.getLatitude(),location.getLongitude());
+        PanMap(loc,(float) 17);
+        Marker m = googleMap.addMarker(new MarkerOptions()
+                .position(loc)
 
+                .title("")
+                .icon( BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_home)));
+        mMainActivity.onMarkerClick(m);
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mMainActivity = (onMarkerClickInfoListener) activity;
+    }
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -67,18 +95,18 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
 
         if(location != null)
-        PanMap(location,(float)17);
+        PanMap(new LatLng(location.getLatitude(), location.getLongitude()),(float)17);
         else{
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         }
 
     }
 
-    private void PanMap(Location location,float zoom){
-        LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+    public void PanMap(LatLng loc,float zoom){
+
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
         if(zoom < googleMap.getMaxZoomLevel())
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom), 2000, null);
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom), 1000, null);
         else
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(googleMap.getMaxZoomLevel()), 2000, null);
 
@@ -86,7 +114,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
     @Override
     public void onLocationChanged(Location location) {
-        PanMap(location,(float)17);
+        PanMap(new LatLng(location.getLatitude(), location.getLongitude()),(float)17);
         mLocationManager.removeUpdates(this);
 
     }
@@ -98,11 +126,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                 .title("")
                 .icon( BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
-
-        MarkerInfoFragment markerInfoFragment = (MarkerInfoFragment) getFragmentManager().findFragmentById(R.id.marker_info_fragment_container);
-        markerInfoFragment.UpdateInfo(m);
-        getFragmentManager().beginTransaction().show(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
-
+        mMainActivity.onMarkerClick(m);
     }
 
     @Override
@@ -123,9 +147,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        MarkerInfoFragment markerInfoFragment = (MarkerInfoFragment) getFragmentManager().findFragmentById(R.id.marker_info_fragment_container);
-        markerInfoFragment.UpdateInfo(marker);
-        getFragmentManager().beginTransaction().show(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
+        mMainActivity.onMarkerClick(marker);
         return false;
     }
 }
