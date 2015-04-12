@@ -1,6 +1,7 @@
 package be.howest.dylandeceulaer.places;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
@@ -15,13 +16,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 
-public class MainActivity extends Activity implements MapFragment.onMarkerClickInfoListener, MarkerInfoFragment.MapInteractionListener {
+public class MainActivity extends ActionBarActivity implements MapFragment.onMarkerClickInfoListener, MarkerInfoFragment.MapInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getFragmentManager().beginTransaction().add(R.id.container, new MapFragment(), "Map").commit();
+        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.kleur));
     }
 
     @Override

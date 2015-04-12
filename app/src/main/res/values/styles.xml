@@ -1,31 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyApp.ActionBar</item>
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:itemTextAppearance">@style/TextAppearance</item>
 
     </style>
 
-    <style name="MyAppActionBarTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:popupMenuStyle">@style/MyApp.PopupMenu</item>
-        <item name="android:actionBarStyle">@style/MyApp.ActionBar</item>
-    </style>
-
-    <!-- The beef: background color for Action Bar overflow menu -->
-    <style name="MyApp.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
+    <style name="PopupMenu" parent="@style/Widget.AppCompat.Light.ListPopupWindow">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_actionbar</item>
     </style>
 
-    <!-- Bonus: if you want to style whole Action Bar, not just the menu -->
-    <style name="MyApp.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
-        <!-- Blue background color & black bottom border -->
-        <item name="android:background">@drawable/kleur</item>
+    <style name="ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="android:colorPrimary">@drawable/kleur</item>
     </style>
 
-
-    <style name="MyActionBar"
-        parent="android:Widget.Holo.Light.ActionBar.Solid">
-        <item name="android:background">@drawable/ab_solid_actionbar</item>
+    <style name="TextAppearance">
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <drawable name="kleur">#00bbd2</drawable>

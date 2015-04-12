@@ -1,11 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:Places="http://schemas.android.com/apk/res-auto"
+
 xmlns:tools="http://schemas.android.com/tools"
 tools:context="be.howest.dylandeceulaer.places.MainActivity">
-<item android:id="@+id/action_settings" android:title="@string/action_settings"
-    android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+    android:orderInCategory="100" Places:showAsAction="never"  />
     <item android:id="@+id/addMarkerCurrentPosition"
         android:icon="@drawable/add_current_location"
         android:title="Add marker on current position"
-        app:showAsAction="ifRoom"/>
+
+        Places:showAsAction="always"/>
 </menu>

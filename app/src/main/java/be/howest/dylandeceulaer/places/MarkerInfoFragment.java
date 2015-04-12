@@ -105,6 +105,9 @@ public class MarkerInfoFragment extends Fragment {
 
         //TODO: vervangen door adapter enal
 
+
+
+
         ((ImageButton) v.findViewById(R.id.home)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -2,6 +2,7 @@ package be.howest.dylandeceulaer.places;
 
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -60,7 +61,13 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         mMainActivity.onMarkerInfoClose();
         com.google.android.gms.maps.MapFragment mapFrag = ((com.google.android.gms.maps.MapFragment) getFragmentManager().findFragmentById(R.id.map));
         mapFrag.getMapAsync(this);
+        loadSavedMarkers();
         return v;
+    }
+
+
+    private void loadSavedMarkers(){
+
     }
 
     public void addMarkerOnCurrentPosition(){
@@ -69,11 +76,18 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         PanMap(loc,(float) 17);
         Marker m = googleMap.addMarker(new MarkerOptions()
                 .position(loc)
-
                 .title("")
                 .icon( BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_home)));
         mMainActivity.onMarkerClick(m);
 
+        SharedPreferences settings = getActivity().getSharedPreferences("hallo", 0);
+
+        //TODO: wegschrijven in SQLITE database
+        MarkerInfo markerInfo = new MarkerInfo("nieuwe marker",loc,"straatnaam", Data.MARKER.getMarker(R.drawable.custom_marker_home));
+        Data data = new Data(getActivity());
+        data.addMarker(markerInfo);
+
+        data.getSavedMarkers();
     }
 
     @Override
