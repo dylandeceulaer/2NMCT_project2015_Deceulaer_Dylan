@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.style.SubscriptSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,8 @@ public class MarkerInfoFragment extends Fragment {
     ImageButton imageButtonZoom;
     TextView textViewStraatnaam;
     Marker currentMarker;
+    MarkerInfo currentMarkerInfo;
+    Data data;
     MapInteractionListener mMainActivity;
 
     public interface MapInteractionListener{
@@ -51,6 +54,7 @@ public class MarkerInfoFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mMainActivity = (MapInteractionListener) activity;
+        data = new Data(activity);
     }
 
     @Override
@@ -78,6 +82,7 @@ public class MarkerInfoFragment extends Fragment {
 
                     getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
                     currentMarker.remove();
+                    data.deleteMarker(currentMarkerInfo);
                 }
             }
         });
@@ -86,7 +91,7 @@ public class MarkerInfoFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
                 if(actionId== EditorInfo.IME_ACTION_DONE){
-                    UpdateInfo(currentMarker);
+                    UpdateInfo(currentMarker, currentMarkerInfo);
                     ((InputMethodManager)getActivity().getSystemService(
                             getActivity().INPUT_METHOD_SERVICE))
                             .hideSoftInputFromWindow(textViewTitle.getWindowToken(), 0);
@@ -112,6 +117,7 @@ public class MarkerInfoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_home));
+                currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_home));
             }
         });
 
@@ -119,6 +125,8 @@ public class MarkerInfoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_poi));
+                currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_poi));
+
             }
         });
 
@@ -126,36 +134,46 @@ public class MarkerInfoFragment extends Fragment {
         return v;
     }
 
-    public void UpdateInfo(Marker marker){
+    public void UpdateInfo(Marker marker,MarkerInfo markerinfo){
         if(currentMarker != null)
             SaveInfo();
 
        if(marker.getTitle().equals("Unnamed Marker") || marker.getTitle().isEmpty())
             textViewTitle.setText("");
         else
-            textViewTitle.setText(marker.getTitle());
+            textViewTitle.setText(markerinfo.getTitel());
 
 
         //opgezocht
 
         //TODO: kijken of al bestaat in adapter
-        //if(textViewStraatnaam.getText().equals("")) {
+        if(markerinfo.getAdres().equals("")) {
             Geocoder geoCoder = new Geocoder( getActivity().getBaseContext(), Locale.getDefault());
             try {
                 List<Address> addresses = geoCoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
                 textViewStraatnaam.setText(addresses.get(0).getAddressLine(0));
+                markerinfo.setAdres(addresses.get(0).getAddressLine(0));
+                data.updateMarker(markerinfo);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        //}
+        }
 
         currentMarker = marker;
+        currentMarkerInfo = markerinfo;
     }
     private void SaveInfo(){
-        if(textViewTitle.getText().toString().isEmpty())
+        if(textViewTitle.getText().toString().isEmpty()) {
             currentMarker.setTitle("Unnamed Marker");
-        else
+            currentMarkerInfo.setTitel("Unnamed Marker");
+            data.updateMarker(currentMarkerInfo);
+        }
+
+        else {
             currentMarker.setTitle(textViewTitle.getText().toString());
+            currentMarkerInfo.setTitel(textViewTitle.getText().toString());
+            data.updateMarker(currentMarkerInfo);
+        }
 
     }
 

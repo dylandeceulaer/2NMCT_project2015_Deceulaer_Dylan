@@ -66,9 +66,9 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
     }
 
     @Override
-    public void onMarkerClick(Marker marker) {
+    public void onMarkerClick(Marker marker, MarkerInfo info) {
         MarkerInfoFragment markerInfoFragment = (MarkerInfoFragment) getFragmentManager().findFragmentById(R.id.marker_info_fragment_container);
-        markerInfoFragment.UpdateInfo(marker);
+        markerInfoFragment.UpdateInfo(marker,info);
         getFragmentManager().beginTransaction().show(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).addToBackStack(null).commit();
 
     }

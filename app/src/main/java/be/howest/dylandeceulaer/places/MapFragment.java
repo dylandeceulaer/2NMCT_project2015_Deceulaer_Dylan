@@ -25,6 +25,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,13 +37,14 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     private GoogleApiClient mGoogleApiClient;
     private LocationManager mLocationManager;
     private onMarkerClickInfoListener mMainActivity;
+    private Data data;
 
     public MapFragment() {
         // Required empty public constructor
     }
 
     public interface onMarkerClickInfoListener{
-        public void onMarkerClick(Marker marker);
+        public void onMarkerClick(Marker marker, MarkerInfo markerinfo);
         public void onMarkerInfoClose();
 
     }
@@ -61,13 +64,24 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         mMainActivity.onMarkerInfoClose();
         com.google.android.gms.maps.MapFragment mapFrag = ((com.google.android.gms.maps.MapFragment) getFragmentManager().findFragmentById(R.id.map));
         mapFrag.getMapAsync(this);
-        loadSavedMarkers();
         return v;
     }
 
 
     private void loadSavedMarkers(){
+        List<MarkerInfo> markers = data.getSavedMarkers();
 
+        if(markers == null) System.out.println("twerkt ni");
+
+        if(markers != null) {
+
+            for (int i = 0; i < markers.size(); i++) {
+                Marker m = googleMap.addMarker(new MarkerOptions()
+                        .position(markers.get(i).getPositie())
+                        .title(markers.get(i).getTitel())
+                        .icon(BitmapDescriptorFactory.fromResource(markers.get(i).getMarkerData().getMarker())));
+            }
+        }
     }
 
     public void addMarkerOnCurrentPosition(){
@@ -78,22 +92,21 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                 .position(loc)
                 .title("")
                 .icon( BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_home)));
-        mMainActivity.onMarkerClick(m);
 
         SharedPreferences settings = getActivity().getSharedPreferences("hallo", 0);
 
-        //TODO: wegschrijven in SQLITE database
-        MarkerInfo markerInfo = new MarkerInfo("nieuwe marker",loc,"straatnaam", Data.MARKER.getMarker(R.drawable.custom_marker_home));
-        Data data = new Data(getActivity());
-        data.addMarker(markerInfo);
-
-        data.getSavedMarkers();
+        MarkerInfo markerInfo = new MarkerInfo("",loc,"", Data.MARKER.getMarker(R.drawable.custom_marker_home));
+        long id = data.addMarker(markerInfo);
+        markerInfo.setId(id);
+        mMainActivity.onMarkerClick(m,markerInfo);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mMainActivity = (onMarkerClickInfoListener) activity;
+        data = new Data(activity);
+
     }
 
     @Override
@@ -102,6 +115,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         googleMap.setBuildingsEnabled(true);
         googleMap.setOnMapLongClickListener(this);
         googleMap.setOnMarkerClickListener(this);
+        loadSavedMarkers();
         mLocationManager = (LocationManager) getActivity().getSystemService(Activity.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = mLocationManager.getBestProvider(criteria, true);
@@ -140,8 +154,15 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                 .title("")
                 .icon( BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
-        mMainActivity.onMarkerClick(m);
+        MarkerInfo markerInfo = new MarkerInfo("",latLng,"", Data.MARKER.getMarker(R.drawable.custom_marker_home));
+        long id = data.addMarker(markerInfo);
+        markerInfo.setId(id);
+
+
+        mMainActivity.onMarkerClick(m,markerInfo);
     }
+
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -161,7 +182,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        mMainActivity.onMarkerClick(marker);
+        mMainActivity.onMarkerClick(marker,data.getMarkerByPosition(marker));
         return false;
     }
 }
