@@ -18,7 +18,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="0dp"
         android:hint="Marker Name"
         android:background="@android:color/transparent"
         android:layout_toEndOf="@+id/imageButtonZoom"
@@ -44,21 +44,26 @@
         android:src="@android:drawable/ic_menu_zoom"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="0dp"
-        android:layout_above="@+id/textViewStraatnaam"
+        android:layout_above="@+id/EditTextStraatnaam"
         android:layout_alignParentStart="true" />
 
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/textViewStraatnaam"
+        android:id="@+id/EditTextStraatnaam"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
         android:layout_below="@+id/textViewTitle"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="5dp"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/textViewTitle" />
+        android:layout_alignEnd="@+id/textViewTitle"
+        android:background="@android:color/transparent"
+
+        android:padding="5dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -68,13 +73,13 @@
         android:src="@android:drawable/ic_menu_delete"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_below="@+id/imageButtonZoom"
+        android:layout_below="@+id/imageButtonClose"
         android:layout_alignParentEnd="true" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewStraatnaam"
+        android:layout_below="@+id/EditTextStraatnaam"
         android:layout_alignParentStart="true">
 
 

@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -71,8 +73,6 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     private void loadSavedMarkers(){
         List<MarkerInfo> markers = data.getSavedMarkers();
 
-        if(markers == null) System.out.println("twerkt ni");
-
         if(markers != null) {
 
             for (int i = 0; i < markers.size(); i++) {
@@ -80,9 +80,9 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                         .position(markers.get(i).getPositie())
                         .title(markers.get(i).getTitel())
                         .icon(BitmapDescriptorFactory.fromResource(markers.get(i).getMarkerData().getMarker())));
-            }
-        }
-    }
+        }            }
+
+}
 
     public void addMarkerOnCurrentPosition(){
         Location location = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), true));
@@ -93,12 +93,16 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                 .title("")
                 .icon( BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_home)));
 
-        SharedPreferences settings = getActivity().getSharedPreferences("hallo", 0);
-
         MarkerInfo markerInfo = new MarkerInfo("",loc,"", Data.MARKER.getMarker(R.drawable.custom_marker_home));
         long id = data.addMarker(markerInfo);
         markerInfo.setId(id);
         mMainActivity.onMarkerClick(m,markerInfo);
+    }
+
+    public void ShowCurrentPosition(){
+        Location location = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), true));
+        LatLng loc = new LatLng(location.getLatitude(),location.getLongitude());
+        PanMap(loc,(float) 17);
     }
 
     @Override
@@ -115,6 +119,30 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         googleMap.setBuildingsEnabled(true);
         googleMap.setOnMapLongClickListener(this);
         googleMap.setOnMarkerClickListener(this);
+        googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                Data data = new Data(getActivity());
+                MarkerInfo info = data.getMarkerByPosition(marker);
+
+                View v = getActivity().getLayoutInflater().inflate(R.layout.infowindowlayout,null);
+                TextView titel = (TextView) v.findViewById(R.id.textViewTitel);
+                TextView adres = (TextView) v.findViewById(R.id.textViewAdres);
+                ImageView imageViewMarker = (ImageView) v.findViewById(R.id.imageViewMarker);
+
+                titel.setText(marker.getTitle());
+                adres.setText(info.getAdres());
+                imageViewMarker.setImageResource(info.getMarkerData().getMarker());
+
+
+                return v;
+            }
+        });
         loadSavedMarkers();
         mLocationManager = (LocationManager) getActivity().getSystemService(Activity.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -161,6 +189,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
         mMainActivity.onMarkerClick(m,markerInfo);
     }
+
 
 
 

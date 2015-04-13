@@ -60,6 +60,9 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
             case R.id.addMarkerCurrentPosition:
                 ((MapFragment) getFragmentManager().findFragmentByTag("Map")).addMarkerOnCurrentPosition();
                 return true;
+            case R.id.CurrentPosition:
+                ((MapFragment) getFragmentManager().findFragmentByTag("Map")).ShowCurrentPosition();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

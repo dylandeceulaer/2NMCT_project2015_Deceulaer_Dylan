@@ -10,4 +10,8 @@ tools:context="be.howest.dylandeceulaer.places.MainActivity">
         android:title="Add marker on current position"
 
         Places:showAsAction="always"/>
+    <item android:id="@+id/CurrentPosition"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:title="Current Position"
+        Places:showAsAction="ifRoom"/>
 </menu>

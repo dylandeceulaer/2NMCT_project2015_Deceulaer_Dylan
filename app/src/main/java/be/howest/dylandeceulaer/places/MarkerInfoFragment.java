@@ -4,10 +4,8 @@ package be.howest.dylandeceulaer.places;
 import android.app.Activity;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.style.SubscriptSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -36,7 +33,7 @@ public class MarkerInfoFragment extends Fragment {
     ImageButton imageButtonClose;
     ImageButton imageButtonDelete;
     ImageButton imageButtonZoom;
-    TextView textViewStraatnaam;
+    EditText textViewStraatnaam;
     Marker currentMarker;
     MarkerInfo currentMarkerInfo;
     Data data;
@@ -65,7 +62,7 @@ public class MarkerInfoFragment extends Fragment {
         textViewTitle = (EditText) v.findViewById(R.id.textViewTitle);
         imageButtonClose = (ImageButton) v.findViewById(R.id.imageButtonClose);
         imageButtonDelete = (ImageButton) v.findViewById(R.id.imageViewDelete);
-        textViewStraatnaam = (TextView) v.findViewById(R.id.textViewStraatnaam);
+        textViewStraatnaam = (EditText) v.findViewById(R.id.EditTextStraatnaam);
         imageButtonZoom = (ImageButton) v.findViewById(R.id.imageButtonZoom);
 
         imageButtonClose.setOnClickListener(new View.OnClickListener() {
@@ -91,11 +88,28 @@ public class MarkerInfoFragment extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
                 if(actionId== EditorInfo.IME_ACTION_DONE){
-                    UpdateInfo(currentMarker, currentMarkerInfo);
+                    currentMarker.setTitle(textViewTitle.getText().toString());
+                    currentMarkerInfo.setTitel(textViewTitle.getText().toString());
+                    data.updateMarker(currentMarkerInfo);
                     ((InputMethodManager)getActivity().getSystemService(
                             getActivity().INPUT_METHOD_SERVICE))
                             .hideSoftInputFromWindow(textViewTitle.getWindowToken(), 0);
                     currentMarker.showInfoWindow();
+                    return true;
+                }
+                return false;
+            }
+        });
+        textViewStraatnaam.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                if(actionId== EditorInfo.IME_ACTION_DONE){
+                    currentMarkerInfo.setAdres(textViewStraatnaam.getText().toString());
+                    data.updateMarker(currentMarkerInfo);
+                    ((InputMethodManager)getActivity().getSystemService(
+                            getActivity().INPUT_METHOD_SERVICE))
+                            .hideSoftInputFromWindow(textViewTitle.getWindowToken(), 0);
                     return true;
                 }
                 return false;
@@ -157,6 +171,8 @@ public class MarkerInfoFragment extends Fragment {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }else{
+            textViewStraatnaam.setText(markerinfo.getAdres());
         }
 
         currentMarker = marker;
@@ -170,8 +186,14 @@ public class MarkerInfoFragment extends Fragment {
         }
 
         else {
+            if(!currentMarkerInfo.getTitel().equals(textViewStraatnaam.getText().toString()))
             currentMarker.setTitle(textViewTitle.getText().toString());
             currentMarkerInfo.setTitel(textViewTitle.getText().toString());
+            data.updateMarker(currentMarkerInfo);
+        }
+
+        if(!textViewStraatnaam.getText().equals(currentMarkerInfo.getAdres())){
+            currentMarkerInfo.setAdres(textViewStraatnaam.getText().toString());
             data.updateMarker(currentMarkerInfo);
         }
 
