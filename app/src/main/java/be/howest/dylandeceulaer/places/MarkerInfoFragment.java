@@ -28,7 +28,7 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MarkerInfoFragment extends Fragment {
+public class MarkerInfoFragment extends android.support.v4.app.Fragment {
     EditText textViewTitle;
     ImageButton imageButtonClose;
     ImageButton imageButtonDelete;
@@ -63,7 +63,6 @@ public class MarkerInfoFragment extends Fragment {
         imageButtonClose = (ImageButton) v.findViewById(R.id.imageButtonClose);
         imageButtonDelete = (ImageButton) v.findViewById(R.id.imageViewDelete);
         textViewStraatnaam = (EditText) v.findViewById(R.id.EditTextStraatnaam);
-        imageButtonZoom = (ImageButton) v.findViewById(R.id.imageButtonZoom);
 
         imageButtonClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,17 +109,13 @@ public class MarkerInfoFragment extends Fragment {
                     ((InputMethodManager)getActivity().getSystemService(
                             getActivity().INPUT_METHOD_SERVICE))
                             .hideSoftInputFromWindow(textViewTitle.getWindowToken(), 0);
+                    currentMarker.showInfoWindow();
                     return true;
                 }
                 return false;
             }
         });
-        imageButtonZoom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMainActivity.onMapZoom(currentMarker.getPosition(),(float) 17);
-            }
-        });
+
 
         //TODO: vervangen door adapter enal
 
@@ -132,6 +127,8 @@ public class MarkerInfoFragment extends Fragment {
             public void onClick(View v) {
                 currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_home));
                 currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_home));
+                currentMarker.showInfoWindow();
+
             }
         });
 
@@ -140,6 +137,7 @@ public class MarkerInfoFragment extends Fragment {
             public void onClick(View v) {
                 currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_poi));
                 currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_poi));
+                currentMarker.showInfoWindow();
 
             }
         });
@@ -165,8 +163,10 @@ public class MarkerInfoFragment extends Fragment {
             Geocoder geoCoder = new Geocoder( getActivity().getBaseContext(), Locale.getDefault());
             try {
                 List<Address> addresses = geoCoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
-                textViewStraatnaam.setText(addresses.get(0).getAddressLine(0));
-                markerinfo.setAdres(addresses.get(0).getAddressLine(0));
+                if(addresses.size()>0) {
+                    textViewStraatnaam.setText(addresses.get(0).getAddressLine(0));
+                    markerinfo.setAdres(addresses.get(0).getAddressLine(0));
+                }
                 data.updateMarker(markerinfo);
             } catch (IOException ex) {
                 ex.printStackTrace();

@@ -10,6 +10,10 @@ import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toolbar;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -18,13 +22,41 @@ import com.google.android.gms.maps.model.Marker;
 
 public class MainActivity extends ActionBarActivity implements MapFragment.onMarkerClickInfoListener, MarkerInfoFragment.MapInteractionListener {
 
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getFragmentManager().beginTransaction().add(R.id.container, new MapFragment(), "Map").commit();
         getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.kleur));
+
+
+        progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        progressBar.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, 24));
+        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.INVISIBLE);
+
+
+        final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
+        decorView.addView(progressBar);
+
+        ViewTreeObserver observer = progressBar.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View contentView = decorView.findViewById(android.R.id.content);
+                progressBar.setY(contentView.getY() + 60);
+
+                ViewTreeObserver observer = progressBar.getViewTreeObserver();
+                observer.removeOnGlobalLayoutListener(this);
+            }
+        });
     }
+
+
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
@@ -70,15 +102,15 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
 
     @Override
     public void onMarkerClick(Marker marker, MarkerInfo info) {
-        MarkerInfoFragment markerInfoFragment = (MarkerInfoFragment) getFragmentManager().findFragmentById(R.id.marker_info_fragment_container);
+        MarkerInfoFragment markerInfoFragment = (MarkerInfoFragment) getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container);
         markerInfoFragment.UpdateInfo(marker,info);
-        getFragmentManager().beginTransaction().show(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().show(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).addToBackStack(null).commit();
 
     }
 
     @Override
     public void onMarkerInfoClose() {
-        getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
+        getSupportFragmentManager().beginTransaction().hide(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
     }
 
     @Override
