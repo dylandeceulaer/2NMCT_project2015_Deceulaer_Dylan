@@ -17,6 +17,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.Settings;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -73,6 +77,17 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map, container, false);
+
+        Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
+        ((MainActivity)getActivity()).setSupportActionBar(toolbar);
+
+        DrawerLayout mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.container_drawer);
+        ActionBarDrawerToggle  mDrawerToggle = new ActionBarDrawerToggle(getActivity(),mDrawerLayout,toolbar,R.string.open,R.string.close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        ((MainActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((MainActivity)getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+
+        mDrawerToggle.syncState();
 
 
         com.google.android.gms.maps.MapFragment mapFrag = getMapFragment();

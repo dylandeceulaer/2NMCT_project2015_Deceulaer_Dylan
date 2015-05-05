@@ -29,9 +29,6 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getFragmentManager().beginTransaction().add(R.id.container, new MapFragment(), "Map").commit();
@@ -42,12 +39,16 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
         progressBar.setIndeterminate(true);
         progressBar.setVisibility(View.INVISIBLE);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        //toolbar.setLogo(R.drawable.ic_launcher);
+
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.container_drawer);
-        ActionBarDrawerToggle  mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,new Toolbar(this),R.string.open,R.string.close);
+        ActionBarDrawerToggle  mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.open,R.string.close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
 
         mDrawerToggle.syncState();
 

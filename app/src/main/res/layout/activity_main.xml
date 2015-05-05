@@ -1,3 +1,5 @@
+
+
 <android.support.v4.widget.DrawerLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -5,15 +7,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container_drawer"
     >
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="be.howest.dylandeceulaer.places.MainActivity"
+
     android:id="@+id/container">
-        </RelativeLayout>
+
+    <include layout="@layout/toolbar" />
+
+</RelativeLayout>
 
     <fragment class="be.howest.dylandeceulaer.places.DrawerMenuFragment"
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:id="@+id/drawermenufragment"

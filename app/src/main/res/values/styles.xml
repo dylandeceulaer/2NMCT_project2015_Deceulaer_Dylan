@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="a" parent="@style/Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
         <item name="android:itemTextAppearance">@style/TextAppearance</item>
@@ -30,7 +30,7 @@
 
     <drawable name="kleur">#00bbd2</drawable>
 
-    
+
 
 
 
