@@ -1,6 +1,7 @@
 package be.howest.dylandeceulaer.places;
 
 
+import android.app.Activity;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -15,7 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 
 /**
@@ -23,6 +27,17 @@ import android.widget.TextView;
  */
 public class DrawerMenuFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
+    onShowMarkerListener mMainActivity;
+
+    public interface onShowMarkerListener{
+        public void onShowMarker(LatLng loc);
+
+    }
+
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mMainActivity = (onShowMarkerListener) activity;
+    }
 
     private AdresAdapter mAdapter;
 
@@ -73,6 +88,15 @@ public class DrawerMenuFragment extends ListFragment implements LoaderManager.Lo
 
             return new MarkerLoader(getActivity());
 
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Cursor c = (Cursor) mAdapter.getItem(position);
+        LatLng loc = new LatLng(c.getDouble(c.getColumnIndex(DatabaseHelper.colPosLat)),c.getDouble(c.getColumnIndex(DatabaseHelper.colPosLong)));
+
+        mMainActivity.onShowMarker(loc);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +69,9 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
         imageButtonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
+                FragmentTransaction trans = getFragmentManager().beginTransaction();
+                trans.setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_bottom);
+                trans.hide(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
                 SaveInfo();
             }
         });
@@ -76,8 +79,9 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 if(currentMarker != null){
-
-                    getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
+                    FragmentTransaction trans = getFragmentManager().beginTransaction();
+                    trans.setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_bottom);
+                    trans.hide(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
                     currentMarker.remove();
                     data.deleteMarker(currentMarkerInfo);
                     mMainActivity.UpdateList();

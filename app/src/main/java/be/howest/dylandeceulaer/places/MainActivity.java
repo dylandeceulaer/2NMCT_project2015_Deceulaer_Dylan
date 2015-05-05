@@ -3,9 +3,12 @@ package be.howest.dylandeceulaer.places;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,13 +17,13 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 
-public class MainActivity extends ActionBarActivity implements MapFragment.onMarkerClickInfoListener, MarkerInfoFragment.MapInteractionListener {
+public class MainActivity extends ActionBarActivity implements MapFragment.onMarkerClickInfoListener, MarkerInfoFragment.MapInteractionListener,DrawerMenuFragment.onShowMarkerListener {
 
     ProgressBar progressBar;
 
@@ -32,14 +35,21 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getFragmentManager().beginTransaction().add(R.id.container, new MapFragment(), "Map").commit();
-        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.kleur));
-
+        //getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.kleur));
 
         progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         progressBar.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, 24));
         progressBar.setIndeterminate(true);
         progressBar.setVisibility(View.INVISIBLE);
 
+        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.container_drawer);
+        ActionBarDrawerToggle  mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,new Toolbar(this),R.string.open,R.string.close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+
+        mDrawerToggle.syncState();
 
         final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
         decorView.addView(progressBar);
@@ -104,7 +114,9 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
     public void onMarkerClick(Marker marker, MarkerInfo info) {
         MarkerInfoFragment markerInfoFragment = (MarkerInfoFragment) getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container);
         markerInfoFragment.UpdateInfo(marker,info);
-        getSupportFragmentManager().beginTransaction().show(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).addToBackStack(null).commit();
+        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+        trans.setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_bottom);
+        trans.show(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
         ((DrawerMenuFragment) getSupportFragmentManager().findFragmentById(R.id.drawermenufragment)).update();
 
 
@@ -112,7 +124,9 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
 
     @Override
     public void onMarkerInfoClose() {
-        getSupportFragmentManager().beginTransaction().hide(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
+        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+        trans.setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_bottom);
+        trans.hide(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
     }
 
     @Override
@@ -124,5 +138,13 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
     @Override
     public void UpdateList() {
         ((DrawerMenuFragment) getSupportFragmentManager().findFragmentById(R.id.drawermenufragment)).update();
+    }
+
+    @Override
+    public void onShowMarker(LatLng loc) {
+        ((MapFragment) getFragmentManager().findFragmentByTag("Map")).PanMap(loc,17);
+        DrawerLayout mDrawerLayout;
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.container_drawer);
+        mDrawerLayout.closeDrawers();
     }
 }

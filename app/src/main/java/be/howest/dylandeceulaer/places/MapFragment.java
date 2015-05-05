@@ -190,6 +190,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         googleMap.setBuildingsEnabled(true);
         googleMap.setOnMapLongClickListener(this);
         googleMap.setOnMarkerClickListener(this);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {

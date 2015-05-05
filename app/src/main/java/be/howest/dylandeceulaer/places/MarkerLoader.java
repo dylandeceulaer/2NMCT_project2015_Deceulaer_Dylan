@@ -38,7 +38,8 @@ public class MarkerLoader extends AsyncTaskLoader<Cursor> {
     private String[] allColumnsMatrix = {BaseColumns._ID,
             DatabaseHelper.colTitle,
             DatabaseHelper.colAddress,
-            DatabaseHelper.colLoc,
+            DatabaseHelper.colPosLat,
+            DatabaseHelper.colPosLong,
             DatabaseHelper.colMarkerIcon,
             DatabaseHelper.colPlaats};
 
@@ -67,7 +68,7 @@ public class MarkerLoader extends AsyncTaskLoader<Cursor> {
             if(mCursor != null) return;
             MatrixCursor cursor = new MatrixCursor(allColumnsMatrix);
 
-            Cursor c = database.query(DatabaseHelper.markerInfoTable,allColumns,null,null,null,null,null);
+            Cursor c = database.query(DatabaseHelper.markerInfoTable,allColumns,null,null,null,null,DatabaseHelper.colPlaats+" ASC, "+DatabaseHelper.colTitle+" ASC" );
 
             c.moveToFirst();
             while (!c.isAfterLast()){
@@ -75,7 +76,8 @@ public class MarkerLoader extends AsyncTaskLoader<Cursor> {
                 row.add(c.getLong(0));
                 row.add(c.getString(1));
                 row.add(c.getString(2));
-                row.add(new LatLng(c.getDouble(3),c.getDouble(4)));
+                row.add(c.getDouble(3));
+                row.add(c.getDouble(4));
                 row.add( c.getInt(5));
                 row.add( c.getString(6));
                 c.moveToNext();
