@@ -24,7 +24,8 @@ public class Data {
     DatabaseHelper.colAddress,
     DatabaseHelper.colPosLat,
     DatabaseHelper.colPosLong,
-    DatabaseHelper.colMarkerIcon};
+    DatabaseHelper.colMarkerIcon,
+    DatabaseHelper.colPlaats};
 
     public enum MARKER{
         HOME("huis",R.drawable.custom_marker_home,R.drawable.custom_marker_home_icon),
@@ -84,7 +85,7 @@ public class Data {
         values.put(DatabaseHelper.colPosLat, markerInfo.getPositie().latitude);
         values.put(DatabaseHelper.colPosLong, markerInfo.getPositie().longitude);
         values.put(DatabaseHelper.colMarkerIcon, markerInfo.getMarkerData().getMarker());
-
+        values.put(DatabaseHelper.colPlaats,markerInfo.getPlaats());
         if(database == null) System.out.println("database");
 
 
@@ -116,8 +117,10 @@ public class Data {
         String address = cursor.getString(2);
         LatLng pos = new LatLng(cursor.getDouble(3),cursor.getDouble(4));
         MARKER marker = MARKER.getMarker(cursor.getInt(5));
+        String plaats = cursor.getString(6);
 
         MarkerInfo mi = new MarkerInfo(title,pos,address,marker);
+        mi.setPlaats(plaats);
         mi.setId(id);
 
         return mi;
@@ -161,6 +164,7 @@ public class Data {
         values.put(DatabaseHelper.colPosLat, markerInfo.getPositie().latitude);
         values.put(DatabaseHelper.colPosLong, markerInfo.getPositie().longitude);
         values.put(DatabaseHelper.colMarkerIcon, markerInfo.getMarkerData().getMarker());
+        values.put(DatabaseHelper.colPlaats,markerInfo.getPlaats());
 
         database.update(DatabaseHelper.markerInfoTable,values,DatabaseHelper.colMarkerInfoID+" = "+markerInfo.getId(),null);
 

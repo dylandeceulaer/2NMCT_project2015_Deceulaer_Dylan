@@ -12,6 +12,7 @@ public class MarkerInfo {
     private LatLng positie;
     private String adres;
     private Data.MARKER markerData;
+    private String plaats;
 
     public MarkerInfo(String titel, LatLng positie, String adres, Data.MARKER markerData) {
         this.titel = titel;
@@ -58,5 +59,13 @@ public class MarkerInfo {
 
     public void setMarkerData(Data.MARKER markerData) {
         this.markerData = markerData;
+    }
+
+    public String getPlaats() {
+        return plaats;
+    }
+
+    public void setPlaats(String plaats) {
+        this.plaats = plaats;
     }
 }

@@ -270,11 +270,13 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
         ((MainActivity)getActivity()).progressBar.setVisibility(View.INVISIBLE);
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, googleMap.getCameraPosition().zoom));
         if(zoom < googleMap.getMaxZoomLevel())
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom), 1000, null);
+            if(googleMap.getCameraPosition().zoom < zoom)
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom), 1500, null);
         else
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(googleMap.getMaxZoomLevel()), 2000, null);
+            if(googleMap.getCameraPosition().zoom < zoom)
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(googleMap.getMaxZoomLevel()), 1500, null);
 
     }
 
@@ -291,7 +293,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         Marker m = googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title("")
-                .icon( BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_home)));
 
         MarkerInfo markerInfo = new MarkerInfo("",latLng,"", Data.MARKER.getMarker(R.drawable.custom_marker_home));
         long id = data.addMarker(markerInfo);

@@ -15,6 +15,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     static final String colTitle="Title";
     static final String colMPosition="Position";
     static final String colAddress="Adress";
+    static final String colLoc="Loc";
+    static final String colPlaats="Plaats";
     static final String colMarker="Marker";
 
     static final String positionTable = "Positions";
@@ -45,6 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE "+markerInfoTable+"("+colMarkerInfoID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + colTitle+" TEXT, "
                 +colAddress+" TEXT, "
+                +colPlaats+" TEXT, "
                 +colPosLat+" REAL NOT NULL ,"
                 +colPosLong+" REAL NOT NULL ,"
                 +colMarkerIcon+" INTEGER NOT NULL "

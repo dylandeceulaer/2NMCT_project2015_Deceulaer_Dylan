@@ -28,6 +28,7 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
     protected void onCreate(Bundle savedInstanceState) {
 
 
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getFragmentManager().beginTransaction().add(R.id.container, new MapFragment(), "Map").commit();
@@ -68,7 +69,6 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-
         return true;
     }
 
@@ -105,6 +105,8 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
         MarkerInfoFragment markerInfoFragment = (MarkerInfoFragment) getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container);
         markerInfoFragment.UpdateInfo(marker,info);
         getSupportFragmentManager().beginTransaction().show(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).addToBackStack(null).commit();
+        ((DrawerMenuFragment) getSupportFragmentManager().findFragmentById(R.id.drawermenufragment)).update();
+
 
     }
 
@@ -117,5 +119,10 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
     public void onMapZoom(LatLng loc, float zoom) {
         ((MapFragment) getFragmentManager().findFragmentByTag("Map")).PanMap(loc,zoom);
 
+    }
+
+    @Override
+    public void UpdateList() {
+        ((DrawerMenuFragment) getSupportFragmentManager().findFragmentById(R.id.drawermenufragment)).update();
     }
 }

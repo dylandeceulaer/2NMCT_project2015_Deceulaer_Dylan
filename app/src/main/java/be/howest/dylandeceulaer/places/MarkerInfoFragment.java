@@ -41,6 +41,7 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
 
     public interface MapInteractionListener{
         public void onMapZoom(LatLng loc, float zoom);
+        public void UpdateList();
     }
 
     public MarkerInfoFragment() {
@@ -79,6 +80,7 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
                     getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
                     currentMarker.remove();
                     data.deleteMarker(currentMarkerInfo);
+                    mMainActivity.UpdateList();
                 }
             }
         });
@@ -94,6 +96,7 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
                             getActivity().INPUT_METHOD_SERVICE))
                             .hideSoftInputFromWindow(textViewTitle.getWindowToken(), 0);
                     currentMarker.showInfoWindow();
+                    mMainActivity.UpdateList();
                     return true;
                 }
                 return false;
@@ -115,10 +118,6 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
                 return false;
             }
         });
-
-
-        //TODO: vervangen door adapter enal
-
 
 
 
@@ -158,7 +157,7 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
 
         //opgezocht
 
-        //TODO: kijken of al bestaat in adapter
+
         if(markerinfo.getAdres().equals("")) {
             Geocoder geoCoder = new Geocoder( getActivity().getBaseContext(), Locale.getDefault());
             try {
@@ -166,6 +165,7 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
                 if(addresses.size()>0) {
                     textViewStraatnaam.setText(addresses.get(0).getAddressLine(0));
                     markerinfo.setAdres(addresses.get(0).getAddressLine(0));
+                    markerinfo.setPlaats(addresses.get(0).getAddressLine(1));
                 }
                 data.updateMarker(markerinfo);
             } catch (IOException ex) {
@@ -183,6 +183,7 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
             currentMarker.setTitle("Unnamed Marker");
             currentMarkerInfo.setTitel("Unnamed Marker");
             data.updateMarker(currentMarkerInfo);
+            mMainActivity.UpdateList();
         }
 
         else {
