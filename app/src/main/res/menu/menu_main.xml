@@ -11,7 +11,7 @@ tools:context="be.howest.dylandeceulaer.places.MainActivity">
 
         Places:showAsAction="always"/>
     <item android:id="@+id/CurrentPosition"
-        android:icon="@android:drawable/ic_menu_mylocation"
+        android:icon="@drawable/my_position_material"
         android:title="Current Position"
         Places:showAsAction="ifRoom"/>
 </menu>

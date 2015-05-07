@@ -22,6 +22,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,16 +49,22 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements LocationListener, OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
+public class MapFragment extends Fragment implements LocationListener, OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
     private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationManager mLocationManager;
     private onMarkerClickInfoListener mMainActivity;
     private Data data;
+    private static View v;
 
     public MapFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        mMainActivity.onMarkerInfoClose();
     }
 
     public interface onMarkerClickInfoListener{
@@ -76,7 +83,21 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_map, container, false);
+
+        //View v;
+
+        if (v != null) {
+            ViewGroup parent = (ViewGroup) v.getParent();
+            if (parent != null)
+                parent.removeView(v);
+        }
+        try {
+            v = inflater.inflate(R.layout.fragment_map, container, false);
+        } catch (InflateException e) {
+        /* map is already there, just return view as it is */
+        }
+
+
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
@@ -286,13 +307,12 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
         ((MainActivity)getActivity()).progressBar.setVisibility(View.INVISIBLE);
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, googleMap.getCameraPosition().zoom));
+
         if(zoom < googleMap.getMaxZoomLevel())
-            if(googleMap.getCameraPosition().zoom < zoom)
-                googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom), 1500, null);
-        else
-            if(googleMap.getCameraPosition().zoom < zoom)
-                googleMap.animateCamera(CameraUpdateFactory.zoomTo(googleMap.getMaxZoomLevel()), 1500, null);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc,zoom), 1000, null);
+            else
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, googleMap.getMaxZoomLevel()), 1000, null);
+
 
     }
 

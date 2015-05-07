@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 public class MainActivity extends ActionBarActivity implements MapFragment.onMarkerClickInfoListener, MarkerInfoFragment.MapInteractionListener,DrawerMenuFragment.onShowMarkerListener {
 
     ProgressBar progressBar;
+    DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
         setSupportActionBar(toolbar);
         //toolbar.setLogo(R.drawable.ic_launcher);
 
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.container_drawer);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.container_drawer);
         ActionBarDrawerToggle  mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.open,R.string.close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,6 +71,18 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
     }
 
 
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawer (Gravity.START);
+        } else if(!getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container).isHidden()) {
+            FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+            trans.setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_bottom);
+            trans.hide(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
+        }else{
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
@@ -125,9 +139,11 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
 
     @Override
     public void onMarkerInfoClose() {
-        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
-        trans.setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_bottom);
-        trans.hide(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
+        if(!getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container).isHidden()) {
+            FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+            trans.setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_bottom);
+            trans.hide(getSupportFragmentManager().findFragmentById(R.id.marker_info_fragment_container)).commit();
+        }
     }
 
     @Override
@@ -148,4 +164,6 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
         mDrawerLayout = (DrawerLayout) findViewById(R.id.container_drawer);
         mDrawerLayout.closeDrawers();
     }
+
+
 }

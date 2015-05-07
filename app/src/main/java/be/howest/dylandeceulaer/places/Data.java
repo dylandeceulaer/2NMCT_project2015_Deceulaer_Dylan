@@ -28,8 +28,9 @@ public class Data {
     DatabaseHelper.colPlaats};
 
     public enum MARKER{
-        HOME("huis",R.drawable.custom_marker_home,R.drawable.custom_marker_home_icon),
-        POI("Point of interest",R.drawable.custom_marker_poi,R.drawable.custom_marker_poi_icon);
+        EMPTY("All categories",0,0),
+        HOME("Home locations",R.drawable.custom_marker_home,R.drawable.custom_marker_home_icon),
+        POI("Point of interests",R.drawable.custom_marker_poi,R.drawable.custom_marker_poi_icon);
 
         private String naam;
         private int marker;
@@ -58,6 +59,12 @@ public class Data {
                 if(marker.getMarker() == id) return marker;
             }
             return MARKER.HOME;
+        }
+
+
+        @Override
+        public String toString() {
+            return naam;
         }
 
     }
@@ -103,6 +110,7 @@ public class Data {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
+
             lijst.add(cursorToMarkerInfo(cursor));
             System.out.println(cursor.getString(1));
 
@@ -112,6 +120,7 @@ public class Data {
         return lijst;
     }
     private MarkerInfo cursorToMarkerInfo(Cursor cursor){
+
         long id = cursor.getLong(0);
         String title = cursor.getString(1);
         String address = cursor.getString(2);
@@ -141,6 +150,7 @@ public class Data {
         Cursor cursor = database.query(DatabaseHelper.markerInfoTable,allColumns,whereClause,whereArgs,null,null,null);
 
         cursor.moveToFirst();
+
         res = cursorToMarkerInfo(cursor);
         close();
 

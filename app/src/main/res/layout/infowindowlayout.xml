@@ -32,28 +32,28 @@
             android:layout_toEndOf="@+id/imageViewMarker"
             android:layout_marginTop="5dp">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="New Text"
+                android:text="T"
                 android:id="@+id/textViewTitel"
                 style="?android:attr/listSeparatorTextViewStyle"
                 android:paddingLeft="0dp"
-                android:paddingTop="0dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                 />
+                android:layout_gravity="start"
+                android:layout_alignParentStart="true" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Small Text"
+                android:text="T"
                 android:id="@+id/textViewAdres"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_alignTop="@+id/imageButton"
-                android:layout_toEndOf="@+id/imageViewMarker"
-                android:layout_marginBottom="5dp" />
+                android:layout_below="@+id/textViewTitel"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp" />
             </LinearLayout>
         <ImageButton
             android:background="@android:color/transparent"

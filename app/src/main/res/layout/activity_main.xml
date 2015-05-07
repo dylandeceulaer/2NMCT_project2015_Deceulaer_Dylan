@@ -19,7 +19,6 @@
 </RelativeLayout>
 
     <fragment class="be.howest.dylandeceulaer.places.DrawerMenuFragment"
-        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:id="@+id/drawermenufragment"

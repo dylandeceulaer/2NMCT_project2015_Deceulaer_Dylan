@@ -6,12 +6,32 @@
     android:id="@+id/menu_drawer"
     android:background="#FFFFFF">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/lijn"
+        android:layout_marginBottom="3dp"
+        android:id="@+id/relativeLayout">
 
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/SpinnerMarkers"></Spinner>
+        
+        <SearchView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/searchViewDrawer"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+
+            />
+    </RelativeLayout>
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@android:id/list"
         android:layout_alignParentEnd="true"
-         />
+        android:layout_below="@+id/relativeLayout" />
 
 </RelativeLayout>
