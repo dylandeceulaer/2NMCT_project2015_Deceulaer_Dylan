@@ -8,7 +8,7 @@ tools:context="be.howest.dylandeceulaer.places.MainActivity">
         android:icon="@drawable/add_current_location"
         android:title="Add marker on current position"
 
-        Places:showAsAction="always"/>
+        Places:showAsAction="ifRoom"/>
     <item android:id="@+id/CurrentPosition"
         android:icon="@drawable/my_position_material"
         android:title="Current Position"

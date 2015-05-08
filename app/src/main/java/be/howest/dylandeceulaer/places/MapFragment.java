@@ -223,7 +223,6 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         googleMap.setOnMapLongClickListener(this);
         googleMap.setOnMarkerClickListener(this);
         googleMap.setOnMapClickListener(this);
-        googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
@@ -239,22 +238,14 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                 TextView titel = (TextView) v.findViewById(R.id.textViewTitel);
                 TextView adres = (TextView) v.findViewById(R.id.textViewAdres);
                 ImageView imageViewMarker = (ImageView) v.findViewById(R.id.imageViewMarker);
-                ImageButton imageButtonZoom = (ImageButton) v.findViewById(R.id.imageButtonZoom);
-                ImageButton imageButtonDir = (ImageButton) v.findViewById(R.id.imageButtonDir);
 
                 titel.setText(marker.getTitle());
                 if(info == null) return null;
                 adres.setText(info.getAdres());
                 imageViewMarker.setImageResource(info.getMarkerData().getMarker());
 
-                imageButtonZoom.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PanMap(marker.getPosition(),(float) 17);
-                    }
-                });
-
                 final Location huidigeLocatie = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), true));
+                /*
                 imageButtonDir.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -268,6 +259,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                         startActivity(intent);
                     }
                 });
+                */
                 googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {

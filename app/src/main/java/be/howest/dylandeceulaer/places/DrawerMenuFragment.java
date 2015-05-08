@@ -2,7 +2,12 @@ package be.howest.dylandeceulaer.places;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.MatrixCursor;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -18,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.ListView;
@@ -189,11 +195,28 @@ public class DrawerMenuFragment extends ListFragment implements LoaderManager.Lo
             super.bindView(view, context, cursor);
             ImageView icon = (ImageView) view.findViewById(R.id.imageViewMarkerDrawer);
 
-
-
-            int colnr = cursor.getColumnIndex(DatabaseHelper.colMarkerIcon);
-            Data.MARKER marker = Data.MARKER.getMarker(cursor.getInt(colnr));
+            int colnrmarker = cursor.getColumnIndex(DatabaseHelper.colMarkerIcon);
+            Data.MARKER marker = Data.MARKER.getMarker(cursor.getInt(colnrmarker));
             icon.setImageResource(marker.getMarker());
+
+            int colnrAdres = cursor.getColumnIndex(DatabaseHelper.colAddress);
+            final String adr = cursor.getString(colnrAdres);
+
+            int colnrPlaats = cursor.getColumnIndex(DatabaseHelper.colPlaats);
+            final String pl = cursor.getString(colnrPlaats);
+
+            ImageButton imageButton = (ImageButton) view.findViewById(R.id.imageButtonDir);
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("google.navigation:q=" + adr+","+pl));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER );
+                    intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                    startActivity(intent);
+                }
+            });
 
         }
     }
