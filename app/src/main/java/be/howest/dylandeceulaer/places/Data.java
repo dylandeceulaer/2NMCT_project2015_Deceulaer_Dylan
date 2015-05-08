@@ -30,7 +30,10 @@ public class Data {
     public enum MARKER{
         EMPTY("All categories",0,0),
         HOME("Home locations",R.drawable.custom_marker_home,R.drawable.custom_marker_home_icon),
-        POI("Point of interests",R.drawable.custom_marker_poi,R.drawable.custom_marker_poi_icon);
+        POI("Point of interests",R.drawable.custom_marker_poi,R.drawable.custom_marker_poi_icon),
+        MUSEUMS("Museums",R.drawable.custom_marker_museum,R.drawable.custom_marker_museum_icon),
+        TRANSPORT("Transport",R.drawable.custom_marker_transport,R.drawable.custom_marker_transport_icon),
+        DRINKS("Drinks and food",R.drawable.custom_marker_drinks,R.drawable.custom_marker_drinks_icon);
 
         private String naam;
         private int marker;
@@ -76,8 +79,6 @@ public class Data {
 
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
-        System.out.println("hallo");
-        if(database == null)System.out.println("hallo2");
     }
 
     public void close() {
@@ -93,7 +94,6 @@ public class Data {
         values.put(DatabaseHelper.colPosLong, markerInfo.getPositie().longitude);
         values.put(DatabaseHelper.colMarkerIcon, markerInfo.getMarkerData().getMarker());
         values.put(DatabaseHelper.colPlaats,markerInfo.getPlaats());
-        if(database == null) System.out.println("database");
 
 
         long a =  database.insert(DatabaseHelper.markerInfoTable, null, values);
@@ -112,7 +112,6 @@ public class Data {
         while (!cursor.isAfterLast()){
 
             lijst.add(cursorToMarkerInfo(cursor));
-            System.out.println(cursor.getString(1));
 
             cursor.moveToNext();
         }
@@ -121,6 +120,8 @@ public class Data {
     }
     private MarkerInfo cursorToMarkerInfo(Cursor cursor){
 
+        if(cursor.getCount()<1)
+            return null;
         long id = cursor.getLong(0);
         String title = cursor.getString(1);
         String address = cursor.getString(2);

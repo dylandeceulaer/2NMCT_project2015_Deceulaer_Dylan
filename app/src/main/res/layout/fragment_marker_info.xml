@@ -43,15 +43,17 @@
         android:imeOptions="actionDone"
         android:layout_below="@+id/textViewTitle"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="10dp"
         android:inputType="textCapSentences"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="5dp"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/textViewTitle"
         android:background="@android:color/transparent"
 
-        android:padding="5dp" />
+        android:layout_alignEnd="@+id/textViewTitle"
+        android:text="azae"
+        android:paddingLeft="0dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -91,7 +93,38 @@
             android:layout_centerVertical="true"
             android:background="@android:color/transparent"
             android:src="@drawable/custom_marker_poi_icon"
-            android:layout_toEndOf="@+id/home" />
+            android:layout_toEndOf="@+id/home"
+            android:layout_marginRight="10dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButtonMuseum"
+            android:background="@android:color/transparent"
+            android:src="@drawable/custom_marker_museum_icon"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/poi"
+            android:layout_marginRight="10dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButtonTransport"
+            android:background="@android:color/transparent"
+            android:src="@drawable/custom_marker_transport_icon"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/imageButtonMuseum"
+            android:layout_marginRight="10dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButtonDrinks"
+            android:background="@android:color/transparent"
+            android:src="@drawable/custom_marker_drinks_icon"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/imageButtonTransport" />
     </RelativeLayout>
 
 

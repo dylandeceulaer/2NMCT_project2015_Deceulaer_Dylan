@@ -11,7 +11,6 @@ import android.support.v4.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +23,6 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -39,6 +37,7 @@ public class DrawerMenuFragment extends ListFragment implements LoaderManager.Lo
     Cursor cursor;
     Cursor origineleData;
     Cursor filteredData;
+    Data data;
 
     public interface onShowMarkerListener{
         public void onShowMarker(LatLng loc);
@@ -48,6 +47,7 @@ public class DrawerMenuFragment extends ListFragment implements LoaderManager.Lo
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mMainActivity = (onShowMarkerListener) activity;
+        data = new Data(activity);
     }
 
     private AdresAdapter mAdapter;
@@ -57,8 +57,10 @@ public class DrawerMenuFragment extends ListFragment implements LoaderManager.Lo
     }
 
     public void update(){
-        getLoaderManager().restartLoader(0, null, this);
-        mAdapter.notifyDataSetChanged();
+        if(mAdapter != null) {
+            getLoaderManager().restartLoader(0, null, this);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -157,6 +159,7 @@ public class DrawerMenuFragment extends ListFragment implements LoaderManager.Lo
         Cursor c = (Cursor) mAdapter.getItem(position);
         LatLng loc = new LatLng(c.getDouble(c.getColumnIndex(DatabaseHelper.colPosLat)),c.getDouble(c.getColumnIndex(DatabaseHelper.colPosLong)));
 
+
         mMainActivity.onShowMarker(loc);
     }
 
@@ -196,6 +199,7 @@ public class DrawerMenuFragment extends ListFragment implements LoaderManager.Lo
     }
     public Cursor filter(String query){
         if(filteredData == null) filteredData = mAdapter.getCursor();
+        if(filteredData == null) return filteredData;
 
         String[] allColumnsMatrix = {BaseColumns._ID,
                 DatabaseHelper.colTitle,

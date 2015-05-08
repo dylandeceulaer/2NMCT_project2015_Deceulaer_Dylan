@@ -130,6 +130,7 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
             public void onClick(View v) {
                 currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_home));
                 currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_home));
+                data.updateMarker(currentMarkerInfo);
                 currentMarker.showInfoWindow();
 
             }
@@ -140,6 +141,40 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
             public void onClick(View v) {
                 currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_poi));
                 currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_poi));
+                data.updateMarker(currentMarkerInfo);
+                currentMarker.showInfoWindow();
+
+            }
+        });
+
+        ((ImageButton) v.findViewById(R.id.imageButtonMuseum)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_museum));
+                currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_museum));
+                data.updateMarker(currentMarkerInfo);
+                currentMarker.showInfoWindow();
+
+            }
+        });
+
+        ((ImageButton) v.findViewById(R.id.imageButtonTransport)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_transport));
+                currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_transport));
+                data.updateMarker(currentMarkerInfo);
+                currentMarker.showInfoWindow();
+
+            }
+        });
+
+        ((ImageButton) v.findViewById(R.id.imageButtonDrinks)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker_drinks));
+                currentMarkerInfo.setMarkerData(Data.MARKER.getMarker(R.drawable.custom_marker_drinks));
+                data.updateMarker(currentMarkerInfo);
                 currentMarker.showInfoWindow();
 
             }
@@ -182,7 +217,7 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
         currentMarker = marker;
         currentMarkerInfo = markerinfo;
     }
-    private void SaveInfo(){
+    public void SaveInfo(){
         if(textViewTitle.getText().toString().isEmpty()) {
             currentMarker.setTitle("Unnamed Marker");
             currentMarkerInfo.setTitel("Unnamed Marker");
