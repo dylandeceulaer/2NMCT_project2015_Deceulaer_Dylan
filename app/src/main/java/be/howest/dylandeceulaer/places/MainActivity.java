@@ -24,7 +24,7 @@ import com.google.android.gms.maps.model.Marker;
 
 public class MainActivity extends ActionBarActivity implements MapFragment.onMarkerClickInfoListener, MarkerInfoFragment.MapInteractionListener,DrawerMenuFragment.onShowMarkerListener {
 
-    ProgressBar progressBar;
+
     DrawerLayout mDrawerLayout;
 
     @Override
@@ -32,12 +32,8 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getFragmentManager().beginTransaction().add(R.id.container, new MapFragment(), "Map").commit();
-        //getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.kleur));
 
-        progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-        progressBar.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, 24));
-        progressBar.setIndeterminate(true);
-        progressBar.setVisibility(View.INVISIBLE);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -52,20 +48,7 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
 
         mDrawerToggle.syncState();
 
-        final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
-        decorView.addView(progressBar);
 
-        ViewTreeObserver observer = progressBar.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                View contentView = decorView.findViewById(android.R.id.content);
-                progressBar.setY(contentView.getY() + 60);
-
-                ViewTreeObserver observer = progressBar.getViewTreeObserver();
-                observer.removeOnGlobalLayoutListener(this);
-            }
-        });
     }
 
 

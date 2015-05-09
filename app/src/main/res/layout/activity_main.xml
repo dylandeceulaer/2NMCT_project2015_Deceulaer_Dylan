@@ -15,6 +15,10 @@
     android:id="@+id/container">
 
     <include layout="@layout/toolbar" />
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:indeterminate="true"/>
 
 </RelativeLayout>
 

@@ -7,11 +7,12 @@ import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -20,14 +21,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,7 +44,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -53,9 +60,9 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     private onMarkerClickInfoListener mMainActivity;
     private Data data;
     private static View v;
+    private ProgressBar progressBar;
 
     public MapFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -77,11 +84,17 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //wanneer de gebruiker de app heeft gepauseerd en terug komt word zijn evt. nieuwe locatie opgevraagt en getoond.
+        mLocationManager = (LocationManager) getActivity().getSystemService(Activity.LOCATION_SERVICE);
+        mLocationManager.requestLocationUpdates(mLocationManager.getBestProvider(new Criteria(),true), 0, 0, this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
-        //View v;
 
         if (v != null) {
             ViewGroup parent = (ViewGroup) v.getParent();
@@ -93,7 +106,8 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         } catch (InflateException e) {
         }
 
-
+        progressBar = (ProgressBar) v.findViewById(R.id.progressbar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
@@ -108,11 +122,53 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
 
         com.google.android.gms.maps.MapFragment mapFrag = getMapFragment();
-//        com.google.android.gms.maps.MapFragment mapFrag = ((com.google.android.gms.maps.MapFragment) getFragmentManager().findFragmentById(R.id.map));
-        //        SupportMapFragment mapFrag = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
 
         mapFrag.getMapAsync(this);
         mMainActivity.onMarkerInfoCloseInit();
+
+
+        final Geocoder geoCoder = new Geocoder( getActivity().getBaseContext(), Locale.getDefault());
+
+        final EditText editText = (EditText) v.findViewById(R.id.editTextSearch);
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                try {
+                    List<Address> addr = geoCoder.getFromLocationName(editText.getText().toString(), 1);
+                    if(addr.size() > 0){
+                        Address a = addr.get(0);
+                        PanMap(new LatLng(a.getLatitude(),a.getLongitude()),15);
+                    }else{
+                        Toast.makeText(getActivity(),"No results to query!",Toast.LENGTH_SHORT).show();
+                    }
+                }catch (IOException ex){
+                    Toast.makeText(getActivity(),"No results to query!",Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+
+
+        ImageButton imageButtonSearch = (ImageButton) v.findViewById(R.id.imageButtonSearch);
+        imageButtonSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    List<Address> addr = geoCoder.getFromLocationName(editText.getText().toString(), 1);
+                    if(addr.size() > 0){
+                        Address a = addr.get(0);
+                        PanMap(new LatLng(a.getLatitude(),a.getLongitude()),15);
+                    }else{
+                        Toast.makeText(getActivity(),"No results to query!",Toast.LENGTH_SHORT);
+                    }
+                }catch (IOException ex){
+                    Toast.makeText(getActivity(),"No results to query!",Toast.LENGTH_SHORT);
+                }
+
+            }
+        });
+
         return v;
     }
 
@@ -153,14 +209,14 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                     public void onClick(DialogInterface dialog, int id) {
                         Intent viewIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(viewIntent);
+                        progressBar.setProgress(View.VISIBLE);
                     }
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
+                        progressBar.setProgress(View.INVISIBLE);
                     }
                 }).setTitle("Location is disabled");
-        // Create the AlertDialog object and return it
         Dialog d = builder.create();
         d.show();
 
@@ -172,8 +228,8 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
             if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)&& !mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
                 showLocationDialog();
             else{
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                ((MainActivity)getActivity()).progressBar.setVisibility(View.VISIBLE);
+                mLocationManager.requestLocationUpdates(mLocationManager.getBestProvider(new Criteria(),true), 0, 0, this);
+                progressBar.setVisibility(View.VISIBLE);
             }
 
         }else {
@@ -197,11 +253,9 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
             if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)&& !mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
                 showLocationDialog();
             else {
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                ((MainActivity)getActivity()).progressBar.setVisibility(View.VISIBLE);
-
+                mLocationManager.requestLocationUpdates(mLocationManager.getBestProvider(new Criteria(),true), 0, 0, this);
+                progressBar.setVisibility(View.VISIBLE);
             }
-
         }else {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
             PanMap(loc, (float) 15);
@@ -244,22 +298,6 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                 adres.setText(info.getAdres());
                 imageViewMarker.setImageResource(info.getMarkerData().getMarker());
 
-                final Location huidigeLocatie = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), true));
-                /*
-                imageButtonDir.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                                Uri.parse("google.navigation:q="+info.getAdres()));
-                                //Uri.parse("http://maps.google.com/maps?   saddr=" + huidigeLocatie.getLatitude() + "," + huidigeLocatie.getLatitude() + "&daddr=" + latitude + "," + longitude));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addCategory(Intent.CATEGORY_LAUNCHER );
-                        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                        startActivity(intent);
-                    }
-                });
-                */
                 googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
@@ -286,32 +324,24 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
         if(location != null)
         PanMap(new LatLng(location.getLatitude(), location.getLongitude()),(float)17);
         else{
-            ((MainActivity)getActivity()).progressBar.setVisibility(View.VISIBLE);
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
+            progressBar.setVisibility(View.VISIBLE);
+            mLocationManager.requestLocationUpdates(mLocationManager.getBestProvider(criteria,true), 0, 0, this);
         }
-
     }
 
     public void PanMap(LatLng loc,float zoom){
-
-        ((MainActivity)getActivity()).progressBar.setVisibility(View.INVISIBLE);
-
-
+        progressBar.setVisibility(View.INVISIBLE);
         if(zoom < googleMap.getMaxZoomLevel())
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc,zoom), 1000, null);
             else
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, googleMap.getMaxZoomLevel()), 1000, null);
-
-
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        ((MainActivity)getActivity()).progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
         PanMap(new LatLng(location.getLatitude(), location.getLongitude()),(float)17);
         mLocationManager.removeUpdates(this);
-
     }
 
     @Override

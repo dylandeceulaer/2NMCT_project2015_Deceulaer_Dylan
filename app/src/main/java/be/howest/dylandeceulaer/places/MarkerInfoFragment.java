@@ -4,6 +4,7 @@ package be.howest.dylandeceulaer.places;
 import android.app.Activity;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -205,9 +207,17 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
                     textViewStraatnaam.setText(addresses.get(0).getAddressLine(0));
                     markerinfo.setAdres(addresses.get(0).getAddressLine(0));
                     markerinfo.setPlaats(addresses.get(0).getAddressLine(1));
+                    data.updateMarker(markerinfo);
+
+                }else{
+                    marker.remove();
+                    data.deleteMarker(markerinfo);
+                    Toast.makeText(this.getActivity(),"No internet connection!",Toast.LENGTH_SHORT).show();
                 }
-                data.updateMarker(markerinfo);
             } catch (IOException ex) {
+                marker.remove();
+                data.deleteMarker(markerinfo);
+                Toast.makeText(this.getActivity(),"No internet connection!",Toast.LENGTH_SHORT).show();
                 ex.printStackTrace();
             }
         }else{
@@ -217,6 +227,8 @@ public class MarkerInfoFragment extends android.support.v4.app.Fragment {
         currentMarker = marker;
         currentMarkerInfo = markerinfo;
     }
+
+
     public void SaveInfo(){
         if(textViewTitle.getText().toString().isEmpty()) {
             currentMarker.setTitle("Unnamed Marker");
