@@ -331,10 +331,12 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
 
     public void PanMap(LatLng loc,float zoom){
         progressBar.setVisibility(View.INVISIBLE);
-        if(zoom < googleMap.getMaxZoomLevel())
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc,zoom), 1000, null);
+        if(googleMap != null) { //Heel af en toe is googleMap null voor een onbekende reden, meestal na lang niets doen.
+            if (zoom < googleMap.getMaxZoomLevel())
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, zoom), 1000, null);
             else
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, googleMap.getMaxZoomLevel()), 1000, null);
+        }
     }
 
     @Override
