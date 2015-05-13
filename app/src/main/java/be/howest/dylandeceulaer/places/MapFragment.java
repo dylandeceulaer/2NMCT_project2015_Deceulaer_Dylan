@@ -138,7 +138,7 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
                     List<Address> addr = geoCoder.getFromLocationName(editText.getText().toString(), 1);
                     if(addr.size() > 0){
                         Address a = addr.get(0);
-                        PanMap(new LatLng(a.getLatitude(),a.getLongitude()),15);
+                        PanMap(new LatLng(a.getLatitude(),a.getLongitude()),17);
                     }else{
                         Toast.makeText(getActivity(),"No results to query!",Toast.LENGTH_SHORT).show();
                     }
@@ -175,8 +175,6 @@ public class MapFragment extends Fragment implements LocationListener, OnMapRead
     private com.google.android.gms.maps.MapFragment getMapFragment() {
         FragmentManager fm = null;
 
-        System.out.println("sdk: " + Build.VERSION.SDK_INT);
-        System.out.println("release: " + Build.VERSION.RELEASE);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             fm = getFragmentManager();

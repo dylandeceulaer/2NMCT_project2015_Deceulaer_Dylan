@@ -134,9 +134,6 @@ public class Data {
         mi.setId(id);
 
         return mi;
-
-
-        //return null;
     }
     public MarkerInfo getMarkerByPosition(Marker marker){
         open();
