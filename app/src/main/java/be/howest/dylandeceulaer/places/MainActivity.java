@@ -33,12 +33,9 @@ public class MainActivity extends ActionBarActivity implements MapFragment.onMar
         setContentView(R.layout.activity_main);
         getFragmentManager().beginTransaction().add(R.id.container, new MapFragment(), "Map").commit();
 
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        //toolbar.setLogo(R.drawable.ic_launcher);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.container_drawer);
         ActionBarDrawerToggle  mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.open,R.string.close);

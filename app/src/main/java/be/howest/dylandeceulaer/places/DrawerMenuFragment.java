@@ -29,6 +29,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -193,33 +194,70 @@ public class DrawerMenuFragment extends ListFragment implements LoaderManager.Lo
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             super.bindView(view, context, cursor);
-            ImageView icon = (ImageView) view.findViewById(R.id.imageViewMarkerDrawer);
-
-            int colnrmarker = cursor.getColumnIndex(DatabaseHelper.colMarkerIcon);
-            Data.MARKER marker = Data.MARKER.getMarker(cursor.getInt(colnrmarker));
-            icon.setImageResource(marker.getMarker());
-
-            int colnrAdres = cursor.getColumnIndex(DatabaseHelper.colAddress);
-            final String adr = cursor.getString(colnrAdres);
-
-            int colnrPlaats = cursor.getColumnIndex(DatabaseHelper.colPlaats);
-            final String pl = cursor.getString(colnrPlaats);
-
-            ImageButton imageButton = (ImageButton) view.findViewById(R.id.imageButtonDir);
-            imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                            Uri.parse("google.navigation:q=" + adr+","+pl));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.addCategory(Intent.CATEGORY_LAUNCHER );
-                    intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                    startActivity(intent);
-                }
-            });
 
         }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Cursor c = mAdapter.getCursor();
+            View row =  super.getView(position, convertView, parent);
+            if(c != null){
+                ViewHolder holder = (ViewHolder) row.getTag();
+                if(holder == null){
+                    holder = new ViewHolder(row);
+                    row.setTag(holder);
+                }
+
+                TextView editTextTitle = holder.editTextTitle;
+                editTextTitle.setText(c.getString((c.getColumnIndex(DatabaseHelper.colTitle))));
+                TextView textViewAddress = holder.textViewAddress;
+                final String adr = c.getString(c.getColumnIndex(DatabaseHelper.colAddress));
+                textViewAddress.setText(adr);
+                TextView textViewPlaats = holder.textViewPlaats;
+                final String pl = c.getString(c.getColumnIndex(DatabaseHelper.colPlaats));
+                textViewPlaats.setText(pl);
+
+                ImageView imageViewMarkerDrawer = holder.imageViewMarkerDrawer;
+                int colnrmarker = c.getColumnIndex(DatabaseHelper.colMarkerIcon);
+                Data.MARKER marker = Data.MARKER.getMarker(c.getInt(colnrmarker));
+                imageViewMarkerDrawer.setImageResource(marker.getMarker());
+                ImageButton imageButtonDir = holder.imageButtonDir;
+
+                imageButtonDir.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                Uri.parse("google.navigation:q=" + adr+","+pl));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addCategory(Intent.CATEGORY_LAUNCHER );
+                        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                        startActivity(intent);
+                    }
+                });
+            }
+            return row;
+        }
     }
+
+    class ViewHolder{
+        public TextView editTextTitle = null;
+        public TextView textViewAddress = null;
+        public TextView textViewPlaats = null;
+        public ImageView imageViewMarkerDrawer = null;
+        public ImageButton imageButtonDir = null;
+
+        public ViewHolder(View row){
+            this.textViewAddress = (TextView) row.findViewById(R.id.textViewAddress);
+            this.editTextTitle = (TextView) row.findViewById(R.id.editTextTitle);
+            this.textViewPlaats = (TextView) row.findViewById(R.id.textViewPlaats);
+            this.imageViewMarkerDrawer = (ImageView) row.findViewById(R.id.imageViewMarkerDrawer);
+            this.imageButtonDir = (ImageButton) row.findViewById(R.id.imageButtonDir);
+
+        }
+
+    }
+
+
     public Cursor filter(String query){
         if(filteredData == null) filteredData = mAdapter.getCursor();
         if(filteredData == null) return filteredData;
